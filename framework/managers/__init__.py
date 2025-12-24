@@ -1,4 +1,4 @@
-"""Manager components for resource, input, and audio handling."""
+"""리소스, 입력, 오디오 처리를 위한 매니저 컴포넌트"""
 
 from framework.managers.resource import ResourceManager
 from framework.managers.input import InputManager

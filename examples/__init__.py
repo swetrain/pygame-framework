@@ -1,3 +1,3 @@
-"""Example games demonstrating framework usage."""
+"""프레임워크 사용법을 보여주는 예제 게임"""
 
 __all__ = []

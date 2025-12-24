@@ -1,4 +1,4 @@
-"""Component system for entities."""
+"""엔티티를 위한 컴포넌트 시스템"""
 
 from framework.components.sprite import Sprite
 from framework.components.animation import Animation
