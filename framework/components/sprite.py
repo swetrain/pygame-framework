@@ -1,7 +1,7 @@
 """
-Sprite component module.
+스프라이트 컴포넌트 모듈
 
-This module provides a sprite rendering component with transform support.
+이 모듈은 변환 지원을 포함한 스프라이트 렌더링 컴포넌트를 제공합니다.
 """
 
 from typing import Optional, Tuple
@@ -10,23 +10,23 @@ import pygame
 
 class Sprite:
     """
-    Component for rendering images/sprites.
+    이미지/스프라이트 렌더링을 위한 컴포넌트
     
-    Supports:
-    - Image rendering
-    - Scaling and rotation
-    - Flipping (horizontal/vertical)
-    - Alpha transparency
+    지원 기능:
+    - 이미지 렌더링
+    - 크기 조정과 회전
+    - 뒤집기 (가로/세로)
+    - 알파 투명도
     
     Attributes:
-        entity: Reference to parent entity
-        image: Original image surface
-        transformed_image: Cached transformed image
-        scale: Scale multiplier (1.0 = original size)
-        rotation: Rotation angle in degrees
-        flip_x: Whether to flip horizontally
-        flip_y: Whether to flip vertically
-        alpha: Alpha transparency (0-255)
+        entity: 부모 엔티티에 대한 참조
+        image: 원본 이미지 표면
+        transformed_image: 캐시된 변환 이미지
+        scale: 크기 배율 (1.0 = 원본 크기)
+        rotation: 회전 각도 (도 단위)
+        flip_x: 가로로 뒤집을지 여부
+        flip_y: 세로로 뒤집을지 여부
+        alpha: 알파 투명도 (0-255)
     """
     
     def __init__(
@@ -39,15 +39,15 @@ class Sprite:
         alpha: int = 255
     ):
         """
-        Initialize the sprite component.
+        스프라이트 컴포넌트를 초기화합니다.
         
         Args:
-            image: Pygame Surface to render
-            scale: Scale multiplier
-            rotation: Initial rotation in degrees
-            flip_x: Flip horizontally
-            flip_y: Flip vertically
-            alpha: Alpha transparency (0-255)
+            image: 렌더링할 Pygame Surface
+            scale: 크기 배율
+            rotation: 초기 회전 각도 (도 단위)
+            flip_x: 가로로 뒤집기
+            flip_y: 세로로 뒤집기
+            alpha: 알파 투명도 (0-255)
         """
         self.entity: Optional['Entity'] = None
         self.image = image
@@ -63,17 +63,17 @@ class Sprite:
         self._update_transform()
     
     def _update_transform(self) -> None:
-        """Update the transformed image based on current properties."""
+        """현재 속성을 기반으로 변환된 이미지를 업데이트합니다."""
         if not self._needs_update:
             return
         
         image = self.original_image
         
-        # Apply flip
+        # 뒤집기 적용
         if self._flip_x or self._flip_y:
             image = pygame.transform.flip(image, self._flip_x, self._flip_y)
         
-        # Apply scale
+        # 크기 조정 적용
         if self._scale != 1.0:
             new_size = (
                 int(image.get_width() * self._scale),
@@ -81,11 +81,11 @@ class Sprite:
             )
             image = pygame.transform.scale(image, new_size)
         
-        # Apply rotation
+        # 회전 적용
         if self._rotation != 0:
             image = pygame.transform.rotate(image, self._rotation)
         
-        # Apply alpha
+        # 알파 적용
         if self._alpha != 255:
             image.set_alpha(self._alpha)
         
@@ -94,60 +94,60 @@ class Sprite:
     
     @property
     def scale(self) -> float:
-        """Get scale multiplier."""
+        """크기 배율을 반환합니다."""
         return self._scale
     
     @scale.setter
     def scale(self, value: float) -> None:
-        """Set scale multiplier."""
+        """크기 배율을 설정합니다."""
         if self._scale != value:
             self._scale = value
             self._needs_update = True
     
     @property
     def rotation(self) -> float:
-        """Get rotation in degrees."""
+        """회전 각도를 반환합니다 (도 단위)."""
         return self._rotation
     
     @rotation.setter
     def rotation(self, value: float) -> None:
-        """Set rotation in degrees."""
+        """회전 각도를 설정합니다 (도 단위)."""
         if self._rotation != value:
             self._rotation = value % 360
             self._needs_update = True
     
     @property
     def flip_x(self) -> bool:
-        """Get horizontal flip state."""
+        """가로 뒤집기 상태를 반환합니다."""
         return self._flip_x
     
     @flip_x.setter
     def flip_x(self, value: bool) -> None:
-        """Set horizontal flip state."""
+        """가로 뒤집기 상태를 설정합니다."""
         if self._flip_x != value:
             self._flip_x = value
             self._needs_update = True
     
     @property
     def flip_y(self) -> bool:
-        """Get vertical flip state."""
+        """세로 뒤집기 상태를 반환합니다."""
         return self._flip_y
     
     @flip_y.setter
     def flip_y(self, value: bool) -> None:
-        """Set vertical flip state."""
+        """세로 뒤집기 상태를 설정합니다."""
         if self._flip_y != value:
             self._flip_y = value
             self._needs_update = True
     
     @property
     def alpha(self) -> int:
-        """Get alpha transparency."""
+        """알파 투명도를 반환합니다."""
         return self._alpha
     
     @alpha.setter
     def alpha(self, value: int) -> None:
-        """Set alpha transparency (0-255)."""
+        """알파 투명도를 설정합니다 (0-255)."""
         value = max(0, min(255, value))
         if self._alpha != value:
             self._alpha = value
@@ -155,10 +155,10 @@ class Sprite:
     
     def set_image(self, image: pygame.Surface) -> None:
         """
-        Change the sprite image.
+        스프라이트 이미지를 변경합니다.
         
         Args:
-            image: New pygame Surface
+            image: 새로운 pygame Surface
         """
         self.original_image = image
         self.image = image
@@ -166,17 +166,17 @@ class Sprite:
     
     def render(self, screen: pygame.Surface) -> None:
         """
-        Render the sprite.
+        스프라이트를 렌더링합니다.
         
         Args:
-            screen: Pygame surface to render to
+            screen: 렌더링할 Pygame 화면
         """
         if not self.entity:
             return
         
         self._update_transform()
         
-        # Calculate position to center the sprite on entity position
+        # 엔티티 위치에 스프라이트를 중앙 배치하기 위한 위치 계산
         rect = self.transformed_image.get_rect()
         rect.center = (
             self.entity.position[0] + self.entity.size[0] / 2,
@@ -187,10 +187,10 @@ class Sprite:
     
     def get_size(self) -> Tuple[int, int]:
         """
-        Get the current size of the transformed sprite.
+        변환된 스프라이트의 현재 크기를 반환합니다.
         
         Returns:
-            Tuple of (width, height)
+            (너비, 높이)의 튜플
         """
         self._update_transform()
         return self.transformed_image.get_size()
