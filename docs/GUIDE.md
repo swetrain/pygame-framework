@@ -1,5 +1,7 @@
 # Pygame Framework Usage Guide
 
+> [🇰🇷 한국어 가이드 (Korean Guide)](GUIDE_KR.md)
+
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Installation](#installation)
