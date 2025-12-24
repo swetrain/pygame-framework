@@ -1,8 +1,8 @@
 """
-Resource management module.
+리소스 관리 모듈
 
-This module provides a singleton ResourceManager for loading and caching
-game resources like images, sounds, and fonts.
+이 모듈은 이미지, 사운드, 폰트와 같은 게임 리소스를 로딩하고 캐싱하기 위한
+싱글톤 ResourceManager를 제공합니다.
 """
 
 from typing import Dict, Optional, Tuple
@@ -12,29 +12,29 @@ import os
 
 class ResourceManager:
     """
-    Singleton resource manager for loading and caching game assets.
+    게임 에셋을 로딩하고 캐싱하기 위한 싱글톤 리소스 매니저
     
-    This manager handles:
-    - Image loading and caching
-    - Sound loading and caching
-    - Font loading and caching
-    - Automatic resource cleanup
+    이 매니저는 다음을 처리합니다:
+    - 이미지 로딩과 캐싱
+    - 사운드 로딩과 캐싱
+    - 폰트 로딩과 캐싱
+    - 자동 리소스 정리
     
-    The singleton pattern ensures only one instance exists,
-    preventing duplicate resource loading.
+    싱글톤 패턴은 하나의 인스턴스만 존재하도록 보장하여
+    중복 리소스 로딩을 방지합니다.
     """
     
     _instance: Optional['ResourceManager'] = None
     
     def __new__(cls):
-        """Implement singleton pattern."""
+        """싱글톤 패턴을 구현합니다."""
         if cls._instance is None:
             cls._instance = super(ResourceManager, cls).__new__(cls)
             cls._instance._initialized = False
         return cls._instance
     
     def __init__(self):
-        """Initialize the resource manager (only once)."""
+        """리소스 매니저를 초기화합니다 (한 번만)."""
         if self._initialized:
             return
         
@@ -46,10 +46,10 @@ class ResourceManager:
     
     def set_base_path(self, path: str) -> None:
         """
-        Set the base path for resource loading.
+        리소스 로딩을 위한 기본 경로를 설정합니다.
         
         Args:
-            path: Base directory path for resources
+            path: 리소스를 위한 기본 디렉토리 경로
         """
         self.base_path = path
     
@@ -60,18 +60,18 @@ class ResourceManager:
         scale: Optional[Tuple[int, int]] = None
     ) -> pygame.Surface:
         """
-        Load an image from file with caching.
+        파일에서 이미지를 로드하고 캐싱합니다.
         
         Args:
-            path: Path to image file (relative to base_path)
-            convert_alpha: Whether to convert image for alpha transparency
-            scale: Optional (width, height) to scale the image
+            path: 이미지 파일 경로 (base_path 기준 상대 경로)
+            convert_alpha: 알파 투명도를 위해 이미지를 변환할지 여부
+            scale: 이미지 크기를 조정할 선택적 (너비, 높이)
             
         Returns:
-            Pygame Surface containing the image
+            이미지를 포함하는 Pygame Surface
             
         Raises:
-            FileNotFoundError: If image file doesn't exist
+            FileNotFoundError: 이미지 파일이 존재하지 않는 경우
         """
         cache_key = f"{path}_{scale}"
         
@@ -103,15 +103,15 @@ class ResourceManager:
         alpha: bool = True
     ) -> pygame.Surface:
         """
-        Create a colored surface (useful for placeholder graphics).
+        색상이 있는 표면을 생성합니다 (플레이스홀더 그래픽에 유용).
         
         Args:
-            size: (width, height) of the surface
-            color: RGB color tuple
-            alpha: Whether to enable alpha channel
+            size: 표면의 (너비, 높이)
+            color: RGB 색상 튜플
+            alpha: 알파 채널을 활성화할지 여부
             
         Returns:
-            Pygame Surface filled with the specified color
+            지정된 색상으로 채워진 Pygame Surface
         """
         if alpha:
             surface = pygame.Surface(size, pygame.SRCALPHA)
@@ -122,16 +122,16 @@ class ResourceManager:
     
     def load_sound(self, path: str) -> pygame.mixer.Sound:
         """
-        Load a sound from file with caching.
+        파일에서 사운드를 로드하고 캐싱합니다.
         
         Args:
-            path: Path to sound file (relative to base_path)
+            path: 사운드 파일 경로 (base_path 기준 상대 경로)
             
         Returns:
-            Pygame Sound object
+            Pygame Sound 객체
             
         Raises:
-            FileNotFoundError: If sound file doesn't exist
+            FileNotFoundError: 사운드 파일이 존재하지 않는 경우
         """
         if path in self.sounds:
             return self.sounds[path]
@@ -151,17 +151,17 @@ class ResourceManager:
         size: int = 24
     ) -> pygame.font.Font:
         """
-        Load a font with caching.
+        폰트를 로드하고 캐싱합니다.
         
         Args:
-            path: Path to font file (None for default font)
-            size: Font size in points
+            path: 폰트 파일 경로 (기본 폰트는 None)
+            size: 포인트 단위 폰트 크기
             
         Returns:
-            Pygame Font object
+            Pygame Font 객체
             
         Raises:
-            FileNotFoundError: If font file doesn't exist
+            FileNotFoundError: 폰트 파일이 존재하지 않는 경우
         """
         cache_key = (path or "", size)
         
@@ -180,43 +180,43 @@ class ResourceManager:
         return font
     
     def clear_images(self) -> None:
-        """Clear all cached images."""
+        """캐시된 모든 이미지를 지웁니다."""
         self.images.clear()
     
     def clear_sounds(self) -> None:
-        """Clear all cached sounds."""
+        """캐시된 모든 사운드를 지웁니다."""
         self.sounds.clear()
     
     def clear_fonts(self) -> None:
-        """Clear all cached fonts."""
+        """캐시된 모든 폰트를 지웁니다."""
         self.fonts.clear()
     
     def clear_all(self) -> None:
-        """Clear all cached resources."""
+        """캐시된 모든 리소스를 지웁니다."""
         self.clear_images()
         self.clear_sounds()
         self.clear_fonts()
     
     def get_cached_image(self, path: str) -> Optional[pygame.Surface]:
         """
-        Get a cached image without loading.
+        로딩 없이 캐시된 이미지를 가져옵니다.
         
         Args:
-            path: Path to image file
+            path: 이미지 파일 경로
             
         Returns:
-            Cached image or None if not in cache
+            캐시된 이미지 또는 캐시에 없으면 None
         """
         return self.images.get(path)
     
     def get_cached_sound(self, path: str) -> Optional[pygame.mixer.Sound]:
         """
-        Get a cached sound without loading.
+        로딩 없이 캐시된 사운드를 가져옵니다.
         
         Args:
-            path: Path to sound file
+            path: 사운드 파일 경로
             
         Returns:
-            Cached sound or None if not in cache
+            캐시된 사운드 또는 캐시에 없으면 None
         """
         return self.sounds.get(path)
