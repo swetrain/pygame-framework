@@ -1,49 +1,49 @@
 """
-Pygame Framework - A reusable 2D game development framework.
+Pygame Framework - 재사용 가능한 2D 게임 개발 프레임워크
 
-This framework provides a structured approach to building 2D games with Pygame,
-optimized for AI-assisted development with clear architecture and consistent patterns.
+이 프레임워크는 Pygame을 사용하여 2D 게임을 구축하기 위한 구조화된 접근 방식을 제공하며,
+명확한 아키텍처와 일관된 패턴으로 AI 지원 개발에 최적화되어 있습니다.
 """
 
 __version__ = "0.1.0"
 __author__ = "Pygame Framework Contributors"
 
-# Core imports
+# 핵심 모듈 임포트
 from framework.core.game import Game
 from framework.core.scene import Scene, SceneManager
 from framework.core.entity import Entity
 
-# Manager imports
+# 매니저 모듈 임포트
 from framework.managers.resource import ResourceManager
 from framework.managers.input import InputManager
 from framework.managers.audio import AudioManager
 
-# Component imports
+# 컴포넌트 모듈 임포트
 from framework.components.sprite import Sprite
 from framework.components.animation import Animation
 from framework.components.physics import PhysicsComponent
 from framework.components.collision import CollisionComponent
 
-# UI imports
+# UI 모듈 임포트
 from framework.ui.button import Button
 from framework.ui.text import Text
 
-# Utility imports
+# 유틸리티 모듈 임포트
 from framework.utils.camera import Camera
 from framework.utils.config import Config
 from framework.utils.helpers import *
 
 __all__ = [
-    # Core
+    # 핵심
     'Game',
     'Scene',
     'SceneManager',
     'Entity',
-    # Managers
+    # 매니저
     'ResourceManager',
     'InputManager',
     'AudioManager',
-    # Components
+    # 컴포넌트
     'Sprite',
     'Animation',
     'PhysicsComponent',
@@ -51,7 +51,7 @@ __all__ = [
     # UI
     'Button',
     'Text',
-    # Utils
+    # 유틸리티
     'Camera',
     'Config',
 ]

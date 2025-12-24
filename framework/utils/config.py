@@ -1,7 +1,7 @@
 """
-Configuration management module.
+설정 관리 모듈
 
-This module provides JSON-based configuration loading and saving.
+이 모듈은 JSON 기반의 설정 로딩과 저장을 제공합니다.
 """
 
 from typing import Any, Dict, Optional
@@ -11,56 +11,56 @@ import os
 
 class Config:
     """
-    Configuration manager for game settings.
+    게임 설정을 위한 설정 매니저
     
-    Handles loading and saving configuration from/to JSON files
-    with default values support.
+    기본값 지원과 함께 JSON 파일로부터/로
+    설정 로딩과 저장을 처리합니다.
     
     Attributes:
-        config_path: Path to configuration file
-        data: Dictionary of configuration values
-        defaults: Dictionary of default values
+        config_path: 설정 파일 경로
+        data: 설정 값의 딕셔너리
+        defaults: 기본값의 딕셔너리
     """
     
     def __init__(self, config_path: str = "config.json"):
         """
-        Initialize the configuration manager.
+        설정 매니저를 초기화합니다.
         
         Args:
-            config_path: Path to configuration file
+            config_path: 설정 파일 경로
         """
         self.config_path = config_path
         self.data: Dict[str, Any] = {}
         self.defaults: Dict[str, Any] = self._get_defaults()
         
-        # Load configuration
+        # 설정 로드
         self.load()
     
     def _get_defaults(self) -> Dict[str, Any]:
         """
-        Get default configuration values.
+        기본 설정 값을 반환합니다.
         
         Returns:
-            Dictionary of default configuration
+            기본 설정 딕셔너리
         """
         return {
-            # Display settings
+            # 디스플레이 설정
             "screen_width": 800,
             "screen_height": 600,
             "fullscreen": False,
             "fps": 60,
             
-            # Audio settings
+            # 오디오 설정
             "music_volume": 1.0,
             "sound_volume": 1.0,
             "mute_music": False,
             "mute_sound": False,
             
-            # Game settings
+            # 게임 설정
             "difficulty": "normal",
             "language": "en",
             
-            # Controls (can be customized)
+            # 컨트롤 (사용자 정의 가능)
             "controls": {
                 "up": "w",
                 "down": "s",
@@ -73,15 +73,15 @@ class Config:
     
     def load(self) -> None:
         """
-        Load configuration from file.
+        파일에서 설정을 로드합니다.
         
-        If file doesn't exist, uses default values.
+        파일이 존재하지 않으면 기본값을 사용합니다.
         """
         if os.path.exists(self.config_path):
             try:
                 with open(self.config_path, 'r') as f:
                     self.data = json.load(f)
-                # Merge with defaults for any missing keys
+                # 누락된 키에 대해 기본값과 병합
                 for key, value in self.defaults.items():
                     if key not in self.data:
                         self.data[key] = value
@@ -89,11 +89,11 @@ class Config:
                 print(f"Error loading config: {e}")
                 self.data = self.defaults.copy()
         else:
-            # Use defaults if file doesn't exist
+            # 파일이 존재하지 않으면 기본값 사용
             self.data = self.defaults.copy()
     
     def save(self) -> None:
-        """Save configuration to file."""
+        """설정을 파일에 저장합니다."""
         try:
             with open(self.config_path, 'w') as f:
                 json.dump(self.data, f, indent=4)
@@ -102,39 +102,39 @@ class Config:
     
     def get(self, key: str, default: Any = None) -> Any:
         """
-        Get a configuration value.
+        설정 값을 가져옵니다.
         
         Args:
-            key: Configuration key
-            default: Default value if key doesn't exist
+            key: 설정 키
+            default: 키가 존재하지 않을 경우 기본값
             
         Returns:
-            Configuration value or default
+            설정 값 또는 기본값
         """
         return self.data.get(key, default)
     
     def set(self, key: str, value: Any) -> None:
         """
-        Set a configuration value.
+        설정 값을 설정합니다.
         
         Args:
-            key: Configuration key
-            value: Value to set
+            key: 설정 키
+            value: 설정할 값
         """
         self.data[key] = value
     
     def get_nested(self, *keys: str, default: Any = None) -> Any:
         """
-        Get a nested configuration value.
+        중첩된 설정 값을 가져옵니다.
         
-        Example: config.get_nested("controls", "jump")
+        예제: config.get_nested("controls", "jump")
         
         Args:
-            keys: Sequence of keys to traverse
-            default: Default value if path doesn't exist
+            keys: 탐색할 키 시퀀스
+            default: 경로가 존재하지 않을 경우 기본값
             
         Returns:
-            Configuration value or default
+            설정 값 또는 기본값
         """
         value = self.data
         for key in keys:
@@ -146,69 +146,69 @@ class Config:
     
     def set_nested(self, *keys: str, value: Any) -> None:
         """
-        Set a nested configuration value.
+        중첩된 설정 값을 설정합니다.
         
-        Example: config.set_nested("controls", "jump", "space")
+        예제: config.set_nested("controls", "jump", "space")
         
         Args:
-            keys: Sequence of keys to traverse (last key is set)
-            value: Value to set
+            keys: 탐색할 키 시퀀스 (마지막 키가 설정됨)
+            value: 설정할 값
         """
         if len(keys) < 2:
             if keys:
                 self.data[keys[0]] = value
             return
         
-        # Navigate to parent
+        # 부모로 이동
         current = self.data
         for key in keys[:-1]:
             if key not in current or not isinstance(current[key], dict):
                 current[key] = {}
             current = current[key]
         
-        # Set final value
+        # 최종 값 설정
         current[keys[-1]] = value
     
     def reset_to_defaults(self) -> None:
-        """Reset all configuration to default values."""
+        """모든 설정을 기본값으로 재설정합니다."""
         self.data = self.defaults.copy()
     
     def reset_key(self, key: str) -> None:
         """
-        Reset a specific key to its default value.
+        특정 키를 기본값으로 재설정합니다.
         
         Args:
-            key: Configuration key to reset
+            key: 재설정할 설정 키
         """
         if key in self.defaults:
             self.data[key] = self.defaults[key]
     
     def has_key(self, key: str) -> bool:
         """
-        Check if configuration has a key.
+        설정에 키가 있는지 확인합니다.
         
         Args:
-            key: Configuration key
+            key: 설정 키
             
         Returns:
-            True if key exists
+            키가 존재하면 True
         """
         return key in self.data
     
     def get_all(self) -> Dict[str, Any]:
         """
-        Get all configuration data.
+        모든 설정 데이터를 가져옵니다.
         
         Returns:
-            Dictionary of all configuration
+            모든 설정의 딕셔너리
         """
         return self.data.copy()
     
     def update(self, new_data: Dict[str, Any]) -> None:
         """
-        Update configuration with new values.
+        새로운 값으로 설정을 업데이트합니다.
         
         Args:
-            new_data: Dictionary of values to update
+            new_data: 업데이트할 값의 딕셔너리
         """
         self.data.update(new_data)

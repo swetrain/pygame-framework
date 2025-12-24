@@ -1,8 +1,8 @@
 """
-Main game engine module.
+메인 게임 엔진 모듈
 
-This module provides the core Game class that manages the game loop,
-screen initialization, and scene management.
+이 모듈은 게임 루프, 화면 초기화, 씬 관리를 담당하는
+핵심 Game 클래스를 제공합니다.
 """
 
 from typing import Optional, Tuple
@@ -12,23 +12,23 @@ from framework.core.scene import SceneManager
 
 class Game:
     """
-    Main game engine class that handles initialization and the game loop.
+    초기화와 게임 루프를 처리하는 메인 게임 엔진 클래스
     
-    This class manages:
-    - Window initialization
-    - Game loop (events, update, render)
-    - FPS limiting and delta time calculation
-    - Scene management integration
+    이 클래스는 다음을 관리합니다:
+    - 창 초기화
+    - 게임 루프 (이벤트, 업데이트, 렌더링)
+    - FPS 제한과 델타 타임 계산
+    - 씬 관리 통합
     
     Attributes:
-        screen_size: Tuple of (width, height) for the game window
-        title: Window title
-        fps: Target frames per second
-        screen: Pygame display surface
-        clock: Pygame clock for FPS management
-        scene_manager: SceneManager instance for scene transitions
-        running: Flag indicating if the game loop is active
-        dt: Delta time in seconds since last frame
+        screen_size: 게임 창의 (너비, 높이) 튜플
+        title: 창 제목
+        fps: 목표 프레임 속도
+        screen: Pygame 디스플레이 화면
+        clock: FPS 관리를 위한 Pygame Clock
+        scene_manager: 씬 전환을 위한 SceneManager 인스턴스
+        running: 게임 루프가 활성화되었는지 나타내는 플래그
+        dt: 지난 프레임 이후의 델타 타임 (초 단위)
     """
     
     def __init__(
@@ -39,101 +39,101 @@ class Game:
         flags: int = 0
     ):
         """
-        Initialize the game engine.
+        게임 엔진을 초기화합니다.
         
         Args:
-            screen_size: Window dimensions (width, height)
-            title: Window title
-            fps: Target frames per second
-            flags: Pygame display flags (e.g., pygame.FULLSCREEN)
+            screen_size: 창 크기 (너비, 높이)
+            title: 창 제목
+            fps: 목표 프레임 속도
+            flags: Pygame 디스플레이 플래그 (예: pygame.FULLSCREEN)
         """
         self.screen_size = screen_size
         self.title = title
         self.fps = fps
         self.flags = flags
         
-        # Initialize Pygame
+        # Pygame 초기화
         pygame.init()
         
-        # Create display
+        # 디스플레이 생성
         self.screen = pygame.display.set_mode(screen_size, flags)
         pygame.display.set_caption(title)
         
-        # Create clock for FPS management
+        # FPS 관리를 위한 Clock 생성
         self.clock = pygame.time.Clock()
         
-        # Scene management
+        # 씬 관리
         self.scene_manager = SceneManager()
         
-        # Game state
+        # 게임 상태
         self.running = False
         self.dt = 0.0
     
     def run(self) -> None:
         """
-        Start the main game loop.
+        메인 게임 루프를 시작합니다.
         
-        The game loop handles:
-        1. Event processing
-        2. Scene updates
-        3. Scene rendering
-        4. FPS limiting and delta time calculation
+        게임 루프는 다음을 처리합니다:
+        1. 이벤트 처리
+        2. 씬 업데이트
+        3. 씬 렌더링
+        4. FPS 제한과 델타 타임 계산
         """
         self.running = True
         
         while self.running:
-            # Calculate delta time (in seconds)
+            # 델타 타임 계산 (초 단위)
             self.dt = self.clock.tick(self.fps) / 1000.0
             
-            # Event handling
+            # 이벤트 처리
             events = pygame.event.get()
             for event in events:
                 if event.type == pygame.QUIT:
                     self.running = False
             
-            # Update current scene
+            # 현재 씬 업데이트
             if self.scene_manager.current_scene:
                 self.scene_manager.current_scene.handle_events(events)
                 self.scene_manager.current_scene.update(self.dt)
             
-            # Render current scene
-            self.screen.fill((0, 0, 0))  # Clear screen with black
+            # 현재 씬 렌더링
+            self.screen.fill((0, 0, 0))  # 화면을 검은색으로 초기화
             if self.scene_manager.current_scene:
                 self.scene_manager.current_scene.render(self.screen)
             
-            # Update display
+            # 디스플레이 업데이트
             pygame.display.flip()
         
-        # Cleanup
+        # 정리
         self.quit()
     
     def quit(self) -> None:
-        """Clean up resources and quit pygame."""
+        """리소스를 정리하고 pygame을 종료합니다."""
         pygame.quit()
     
     def set_scene(self, scene_name: str) -> None:
         """
-        Change to a different scene.
+        다른 씬으로 전환합니다.
         
         Args:
-            scene_name: Name of the scene to switch to
+            scene_name: 전환할 씬의 이름
         """
         self.scene_manager.change_scene(scene_name)
     
     def get_screen_size(self) -> Tuple[int, int]:
         """
-        Get the current screen dimensions.
+        현재 화면 크기를 반환합니다.
         
         Returns:
-            Tuple of (width, height)
+            (너비, 높이) 튜플
         """
         return self.screen_size
     
     def get_fps(self) -> float:
         """
-        Get the current frames per second.
+        현재 프레임 속도를 반환합니다.
         
         Returns:
-            Current FPS as a float
+            현재 FPS (float 타입)
         """
         return self.clock.get_fps()

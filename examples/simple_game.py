@@ -1,12 +1,12 @@
 """
-Simple example game demonstrating the pygame framework.
+pygame 프레임워크를 보여주는 간단한 예제 게임
 
-This example shows:
-- Scene system (Title and Game scenes)
-- Player entity with keyboard controls
-- Simple collision detection
-- UI buttons
-- Component-based architecture
+이 예제는 다음을 보여줍니다:
+- 씬 시스템 (타이틀과 게임 씬)
+- 키보드 조작이 가능한 플레이어 엔티티
+- 간단한 충돌 감지
+- UI 버튼
+- 컴포넌트 기반 아키텍처
 """
 
 import pygame
@@ -25,43 +25,43 @@ from framework.utils.helpers import Colors
 
 
 class Player(Entity):
-    """Player entity with movement controls."""
+    """이동 조작이 가능한 플레이어 엔티티"""
     
     def __init__(self, position):
         super().__init__(position, (40, 40))
         
-        # Create a simple player sprite (green square)
+        # 간단한 플레이어 스프라이트 생성 (녹색 사각형)
         resource_manager = ResourceManager()
         player_image = resource_manager.create_surface((40, 40), Colors.GREEN)
         
-        # Add sprite component
+        # 스프라이트 컴포넌트 추가
         sprite = Sprite(player_image)
         self.add_component('sprite', sprite)
         
-        # Add physics for movement
+        # 이동을 위한 물리 추가
         physics = PhysicsComponent(gravity=0, drag=0.85)
         self.add_component('physics', physics)
         
-        # Add collision component
+        # 충돌 컴포넌트 추가
         collision = CollisionComponent(collision_tags={'obstacle', 'collectible'})
         self.add_component('collision', collision)
         
-        # Movement speed
+        # 이동 속도
         self.speed = 300
     
     def update(self, dt):
-        """Update player with input handling."""
+        """입력 처리와 함께 플레이어를 업데이트합니다."""
         super().update(dt)
         
-        # Get input
+        # 입력 가져오기
         keys = pygame.key.get_pressed()
         physics = self.get_component('physics')
         
-        # Reset horizontal velocity
+        # 수평 속도 리셋
         vx, vy = physics.get_velocity()
         vx = 0
         
-        # Movement
+        # 이동
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             vx = -self.speed
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
@@ -75,37 +75,37 @@ class Player(Entity):
 
 
 class Obstacle(Entity):
-    """Static obstacle entity."""
+    """정적 장애물 엔티티"""
     
     def __init__(self, position, size):
         super().__init__(position, size)
         
-        # Create obstacle sprite (red rectangle)
+        # 장애물 스프라이트 생성 (빨간색 사각형)
         resource_manager = ResourceManager()
         obstacle_image = resource_manager.create_surface(size, Colors.RED)
         
         sprite = Sprite(obstacle_image)
         self.add_component('sprite', sprite)
         
-        # Add collision
+        # 충돌 추가
         collision = CollisionComponent(layer='obstacle')
         self.add_component('collision', collision)
 
 
 class Collectible(Entity):
-    """Collectible item entity."""
+    """수집 가능한 아이템 엔티티"""
     
     def __init__(self, position):
         super().__init__(position, (20, 20))
         
-        # Create collectible sprite (yellow circle-ish square)
+        # 수집 가능한 스프라이트 생성 (노란색 원형 사각형)
         resource_manager = ResourceManager()
         collectible_image = resource_manager.create_surface((20, 20), Colors.YELLOW)
         
         sprite = Sprite(collectible_image)
         self.add_component('sprite', sprite)
         
-        # Add collision
+        # 충돌 추가
         collision = CollisionComponent(
             layer='collectible',
             on_collision=self.on_collect
@@ -115,7 +115,7 @@ class Collectible(Entity):
         self.collected = False
     
     def on_collect(self, other_entity):
-        """Handle collection."""
+        """수집을 처리합니다."""
         if isinstance(other_entity, Player) and not self.collected:
             self.collected = True
             self.set_active(False)
@@ -123,7 +123,7 @@ class Collectible(Entity):
 
 
 class TitleScene(Scene):
-    """Title screen scene."""
+    """타이틀 화면 씬"""
     
     def __init__(self, game):
         super().__init__("title", game)
@@ -133,10 +133,10 @@ class TitleScene(Scene):
         self.quit_button = None
     
     def on_enter(self):
-        """Initialize title screen."""
+        """타이틀 화면을 초기화합니다."""
         screen_width, screen_height = self.game.get_screen_size()
         
-        # Title text
+        # 타이틀 텍스트
         self.title_text = Text(
             "Pygame Framework Demo",
             (screen_width // 2, 150),
@@ -145,7 +145,7 @@ class TitleScene(Scene):
             alignment="center"
         )
         
-        # Start button
+        # 시작 버튼
         self.start_button = Button(
             position=(screen_width // 2 - 100, 300),
             size=(200, 50),
@@ -155,7 +155,7 @@ class TitleScene(Scene):
             hover_color=(0, 200, 0)
         )
         
-        # Quit button
+        # 종료 버튼
         self.quit_button = Button(
             position=(screen_width // 2 - 100, 370),
             size=(200, 50),
@@ -166,20 +166,20 @@ class TitleScene(Scene):
         )
     
     def start_game(self):
-        """Start the game."""
+        """게임을 시작합니다."""
         self.game.set_scene("game")
     
     def quit_game(self):
-        """Quit the application."""
+        """애플리케이션을 종료합니다."""
         self.game.running = False
     
     def handle_events(self, events):
-        """Handle events."""
+        """이벤트를 처리합니다."""
         self.start_button.update(events)
         self.quit_button.update(events)
     
     def render(self, screen):
-        """Render title screen."""
+        """타이틀 화면을 렌더링합니다."""
         screen.fill(Colors.DARK_GRAY)
         self.title_text.render(screen)
         self.start_button.render(screen)
@@ -187,7 +187,7 @@ class TitleScene(Scene):
 
 
 class GameScene(Scene):
-    """Main gameplay scene."""
+    """메인 게임플레이 씬"""
     
     def __init__(self, game):
         super().__init__("game", game)
@@ -201,15 +201,15 @@ class GameScene(Scene):
         self.back_button = None
     
     def on_enter(self):
-        """Initialize game scene."""
+        """게임 씬을 초기화합니다."""
         screen_width, screen_height = self.game.get_screen_size()
         
-        # Create player
+        # 플레이어 생성
         self.player = Player((screen_width // 2, screen_height // 2))
         self.entities.append(self.player)
         self.collision_system.add_entity(self.player)
         
-        # Create obstacles
+        # 장애물 생성
         obstacles = [
             Obstacle((100, 100), (80, 80)),
             Obstacle((600, 400), (100, 60)),
@@ -219,7 +219,7 @@ class GameScene(Scene):
             self.entities.append(obstacle)
             self.collision_system.add_entity(obstacle)
         
-        # Create collectibles
+        # 수집 가능 아이템 생성
         collectibles = [
             Collectible((200, 300)),
             Collectible((500, 200)),
@@ -230,7 +230,7 @@ class GameScene(Scene):
             self.entities.append(collectible)
             self.collision_system.add_entity(collectible)
         
-        # Score text
+        # 점수 텍스트
         self.score_text = Text(
             "Use Arrow Keys or WASD to move",
             (10, 10),
@@ -238,7 +238,7 @@ class GameScene(Scene):
             color=Colors.WHITE
         )
         
-        # Back button
+        # 뒤로가기 버튼
         self.back_button = Button(
             position=(10, 50),
             size=(120, 40),
@@ -250,61 +250,61 @@ class GameScene(Scene):
         )
     
     def back_to_menu(self):
-        """Return to title screen."""
+        """타이틀 화면으로 돌아갑니다."""
         self.game.set_scene("title")
     
     def on_exit(self):
-        """Clean up game scene."""
+        """게임 씬을 정리합니다."""
         self.entities.clear()
         self.collision_system.clear()
     
     def handle_events(self, events):
-        """Handle events."""
+        """이벤트를 처리합니다."""
         self.input_manager.update(events)
         self.back_button.update(events)
     
     def update(self, dt):
-        """Update game logic."""
-        # Update all entities
+        """게임 로직을 업데이트합니다."""
+        # 모든 엔티티 업데이트
         for entity in self.entities:
             entity.update(dt)
         
-        # Check collisions
+        # 충돌 확인
         self.collision_system.check_collisions()
     
     def render(self, screen):
-        """Render game scene."""
+        """게임 씬을 렌더링합니다."""
         screen.fill(Colors.BLACK)
         
-        # Render all entities
+        # 모든 엔티티 렌더링
         for entity in self.entities:
             entity.render(screen)
         
-        # Render UI
+        # UI 렌더링
         self.score_text.render(screen)
         self.back_button.render(screen)
 
 
 def main():
-    """Main entry point."""
-    # Create game instance
+    """메인 진입점"""
+    # 게임 인스턴스 생성
     game = Game(
         screen_size=(800, 600),
         title="Pygame Framework - Simple Game Example",
         fps=60
     )
     
-    # Create and register scenes
+    # 씬 생성 및 등록
     title_scene = TitleScene(game)
     game_scene = GameScene(game)
     
     game.scene_manager.add_scene(title_scene)
     game.scene_manager.add_scene(game_scene)
     
-    # Start with title scene
+    # 타이틀 씬으로 시작
     game.scene_manager.change_scene("title")
     
-    # Run game
+    # 게임 실행
     game.run()
 
 

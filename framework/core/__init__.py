@@ -1,4 +1,4 @@
-"""Core framework components."""
+"""핵심 프레임워크 컴포넌트"""
 
 from framework.core.game import Game
 from framework.core.scene import Scene, SceneManager

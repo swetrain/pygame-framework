@@ -1,8 +1,8 @@
 """
-Entity system module.
+엔티티 시스템 모듈
 
-This module provides the base Entity class for game objects with
-component-based architecture.
+이 모듈은 컴포넌트 기반 아키텍처를 사용하는 게임 오브젝트를 위한
+기본 Entity 클래스를 제공합니다.
 """
 
 from typing import Dict, List, Optional, Tuple, Any
@@ -11,17 +11,17 @@ import pygame
 
 class Entity:
     """
-    Base class for all game entities/objects.
+    모든 게임 엔티티/오브젝트의 기본 클래스
     
-    An entity represents any game object (player, enemy, item, etc.)
-    and supports a component-based architecture for flexible behavior.
+    엔티티는 모든 게임 오브젝트(플레이어, 적, 아이템 등)를 나타내며
+    유연한 동작을 위한 컴포넌트 기반 아키텍처를 지원합니다.
     
     Attributes:
-        position: (x, y) position in world space
-        size: (width, height) dimensions
-        active: Whether the entity should update and render
-        components: Dictionary of attached components
-        tags: Set of string tags for identification
+        position: 월드 공간에서의 (x, y) 위치
+        size: (너비, 높이) 크기
+        active: 엔티티를 업데이트하고 렌더링할지 여부
+        components: 연결된 컴포넌트의 딕셔너리
+        tags: 식별을 위한 문자열 태그 세트
     """
     
     def __init__(
@@ -30,11 +30,11 @@ class Entity:
         size: Tuple[float, float] = (32, 32)
     ):
         """
-        Initialize the entity.
+        엔티티를 초기화합니다.
         
         Args:
-            position: Initial (x, y) position
-            size: Initial (width, height) dimensions
+            position: 초기 (x, y) 위치
+            size: 초기 (너비, 높이) 크기
         """
         self.position = list(position)  # [x, y]
         self.size = list(size)  # [width, height]
@@ -44,118 +44,118 @@ class Entity:
     
     def add_component(self, name: str, component: Any) -> None:
         """
-        Add a component to this entity.
+        이 엔티티에 컴포넌트를 추가합니다.
         
         Args:
-            name: Unique identifier for the component
-            component: Component instance to attach
+            name: 컴포넌트의 고유 식별자
+            component: 연결할 컴포넌트 인스턴스
         """
         self.components[name] = component
         
-        # Set entity reference on component if it has the attribute
+        # 컴포넌트에 속성이 있으면 엔티티 참조를 설정
         if hasattr(component, 'entity'):
             component.entity = self
     
     def get_component(self, name: str) -> Optional[Any]:
         """
-        Retrieve a component by name.
+        이름으로 컴포넌트를 가져옵니다.
         
         Args:
-            name: Component identifier
+            name: 컴포넌트 식별자
             
         Returns:
-            Component instance or None if not found
+            컴포넌트 인스턴스 또는 찾지 못한 경우 None
         """
         return self.components.get(name)
     
     def remove_component(self, name: str) -> None:
         """
-        Remove a component from this entity.
+        이 엔티티에서 컴포넌트를 제거합니다.
         
         Args:
-            name: Component identifier to remove
+            name: 제거할 컴포넌트 식별자
         """
         if name in self.components:
             del self.components[name]
     
     def has_component(self, name: str) -> bool:
         """
-        Check if entity has a specific component.
+        엔티티가 특정 컴포넌트를 가지고 있는지 확인합니다.
         
         Args:
-            name: Component identifier
+            name: 컴포넌트 식별자
             
         Returns:
-            True if component exists, False otherwise
+            컴포넌트가 존재하면 True, 그렇지 않으면 False
         """
         return name in self.components
     
     def add_tag(self, tag: str) -> None:
         """
-        Add a tag to this entity for identification.
+        식별을 위해 이 엔티티에 태그를 추가합니다.
         
         Args:
-            tag: Tag string to add
+            tag: 추가할 태그 문자열
         """
         self.tags.add(tag)
     
     def remove_tag(self, tag: str) -> None:
         """
-        Remove a tag from this entity.
+        이 엔티티에서 태그를 제거합니다.
         
         Args:
-            tag: Tag string to remove
+            tag: 제거할 태그 문자열
         """
         self.tags.discard(tag)
     
     def has_tag(self, tag: str) -> bool:
         """
-        Check if entity has a specific tag.
+        엔티티가 특정 태그를 가지고 있는지 확인합니다.
         
         Args:
-            tag: Tag string to check
+            tag: 확인할 태그 문자열
             
         Returns:
-            True if entity has the tag, False otherwise
+            엔티티가 태그를 가지고 있으면 True, 그렇지 않으면 False
         """
         return tag in self.tags
     
     def update(self, dt: float) -> None:
         """
-        Update entity logic and all components.
+        엔티티 로직과 모든 컴포넌트를 업데이트합니다.
         
         Args:
-            dt: Delta time in seconds since last frame
+            dt: 지난 프레임 이후의 델타 타임 (초 단위)
         """
         if not self.active:
             return
         
-        # Update all components that have an update method
+        # update 메서드가 있는 모든 컴포넌트 업데이트
         for component in self.components.values():
             if hasattr(component, 'update'):
                 component.update(dt)
     
     def render(self, screen: pygame.Surface) -> None:
         """
-        Render entity and all components.
+        엔티티와 모든 컴포넌트를 렌더링합니다.
         
         Args:
-            screen: Pygame surface to render to
+            screen: 렌더링할 Pygame 화면
         """
         if not self.active:
             return
         
-        # Render all components that have a render method
+        # render 메서드가 있는 모든 컴포넌트 렌더링
         for component in self.components.values():
             if hasattr(component, 'render'):
                 component.render(screen)
     
     def get_rect(self) -> pygame.Rect:
         """
-        Get the bounding rectangle for this entity.
+        이 엔티티의 경계 사각형을 반환합니다.
         
         Returns:
-            Pygame Rect representing entity bounds
+            엔티티 경계를 나타내는 Pygame Rect
         """
         return pygame.Rect(
             self.position[0],
@@ -166,58 +166,58 @@ class Entity:
     
     def set_position(self, x: float, y: float) -> None:
         """
-        Set entity position.
+        엔티티 위치를 설정합니다.
         
         Args:
-            x: X coordinate
-            y: Y coordinate
+            x: X 좌표
+            y: Y 좌표
         """
         self.position[0] = x
         self.position[1] = y
     
     def get_position(self) -> Tuple[float, float]:
         """
-        Get entity position.
+        엔티티 위치를 반환합니다.
         
         Returns:
-            Tuple of (x, y) coordinates
+            (x, y) 좌표의 튜플
         """
         return tuple(self.position)
     
     def set_size(self, width: float, height: float) -> None:
         """
-        Set entity size.
+        엔티티 크기를 설정합니다.
         
         Args:
-            width: Entity width
-            height: Entity height
+            width: 엔티티 너비
+            height: 엔티티 높이
         """
         self.size[0] = width
         self.size[1] = height
     
     def get_size(self) -> Tuple[float, float]:
         """
-        Get entity size.
+        엔티티 크기를 반환합니다.
         
         Returns:
-            Tuple of (width, height)
+            (너비, 높이)의 튜플
         """
         return tuple(self.size)
     
     def set_active(self, active: bool) -> None:
         """
-        Set entity active state.
+        엔티티 활성 상태를 설정합니다.
         
         Args:
-            active: True to activate, False to deactivate
+            active: 활성화하려면 True, 비활성화하려면 False
         """
         self.active = active
     
     def is_active(self) -> bool:
         """
-        Check if entity is active.
+        엔티티가 활성 상태인지 확인합니다.
         
         Returns:
-            True if active, False otherwise
+            활성 상태이면 True, 그렇지 않으면 False
         """
         return self.active

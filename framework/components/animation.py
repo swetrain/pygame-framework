@@ -1,7 +1,7 @@
 """
-Animation component module.
+애니메이션 컴포넌트 모듈
 
-This module provides frame-based sprite animation support.
+이 모듈은 프레임 기반 스프라이트 애니메이션 지원을 제공합니다.
 """
 
 from typing import List, Optional
@@ -10,22 +10,22 @@ import pygame
 
 class Animation:
     """
-    Component for frame-based sprite animation.
+    프레임 기반 스프라이트 애니메이션을 위한 컴포넌트
     
-    Supports:
-    - Multiple animation frames
-    - Adjustable playback speed
-    - Loop and one-shot modes
-    - Animation state tracking
+    지원 기능:
+    - 다중 애니메이션 프레임
+    - 조정 가능한 재생 속도
+    - 루프 및 원샷 모드
+    - 애니메이션 상태 추적
     
     Attributes:
-        entity: Reference to parent entity
-        frames: List of pygame Surfaces for animation frames
-        frame_duration: Duration of each frame in seconds
-        loop: Whether to loop the animation
-        current_frame: Current frame index
-        playing: Whether animation is currently playing
-        finished: Whether one-shot animation has finished
+        entity: 부모 엔티티에 대한 참조
+        frames: 애니메이션 프레임을 위한 pygame Surface 리스트
+        frame_duration: 각 프레임의 지속 시간 (초 단위)
+        loop: 애니메이션을 반복할지 여부
+        current_frame: 현재 프레임 인덱스
+        playing: 애니메이션이 현재 재생 중인지 여부
+        finished: 원샷 애니메이션이 완료되었는지 여부
     """
     
     def __init__(
@@ -36,13 +36,13 @@ class Animation:
         autoplay: bool = True
     ):
         """
-        Initialize the animation component.
+        애니메이션 컴포넌트를 초기화합니다.
         
         Args:
-            frames: List of pygame Surfaces (animation frames)
-            frame_duration: Duration of each frame in seconds
-            loop: Whether to loop the animation
-            autoplay: Start playing automatically
+            frames: pygame Surface의 리스트 (애니메이션 프레임)
+            frame_duration: 각 프레임의 지속 시간 (초 단위)
+            loop: 애니메이션을 반복할지 여부
+            autoplay: 자동으로 재생 시작
         """
         self.entity: Optional['Entity'] = None
         self.frames = frames
@@ -57,43 +57,43 @@ class Animation:
             raise ValueError("Animation must have at least one frame")
     
     def play(self) -> None:
-        """Start or resume animation playback."""
+        """애니메이션 재생을 시작하거나 재개합니다."""
         self.playing = True
         self.finished = False
     
     def stop(self) -> None:
-        """Stop animation playback."""
+        """애니메이션 재생을 중지합니다."""
         self.playing = False
     
     def reset(self) -> None:
-        """Reset animation to first frame."""
+        """애니메이션을 첫 프레임으로 리셋합니다."""
         self.current_frame = 0
         self.time_accumulator = 0.0
         self.finished = False
     
     def restart(self) -> None:
-        """Reset and start playing animation."""
+        """리셋하고 애니메이션 재생을 시작합니다."""
         self.reset()
         self.play()
     
     def update(self, dt: float) -> None:
         """
-        Update animation state.
+        애니메이션 상태를 업데이트합니다.
         
         Args:
-            dt: Delta time in seconds
+            dt: 델타 타임 (초 단위)
         """
         if not self.playing or self.finished:
             return
         
         self.time_accumulator += dt
         
-        # Check if we should advance to next frame
+        # 다음 프레임으로 진행해야 하는지 확인
         while self.time_accumulator >= self.frame_duration:
             self.time_accumulator -= self.frame_duration
             self.current_frame += 1
             
-            # Handle end of animation
+            # 애니메이션 종료 처리
             if self.current_frame >= len(self.frames):
                 if self.loop:
                     self.current_frame = 0
@@ -104,62 +104,62 @@ class Animation:
     
     def get_current_frame(self) -> pygame.Surface:
         """
-        Get the current animation frame.
+        현재 애니메이션 프레임을 반환합니다.
         
         Returns:
-            Current frame as pygame Surface
+            pygame Surface로서의 현재 프레임
         """
         return self.frames[self.current_frame]
     
     def set_frame(self, frame_index: int) -> None:
         """
-        Set the current frame index.
+        현재 프레임 인덱스를 설정합니다.
         
         Args:
-            frame_index: Frame index to set
+            frame_index: 설정할 프레임 인덱스
         """
         self.current_frame = max(0, min(frame_index, len(self.frames) - 1))
     
     def is_finished(self) -> bool:
         """
-        Check if animation has finished (for one-shot animations).
+        애니메이션이 완료되었는지 확인합니다 (원샷 애니메이션용).
         
         Returns:
-            True if animation has finished
+            애니메이션이 완료되었으면 True
         """
         return self.finished
     
     def is_playing(self) -> bool:
         """
-        Check if animation is currently playing.
+        애니메이션이 현재 재생 중인지 확인합니다.
         
         Returns:
-            True if animation is playing
+            애니메이션이 재생 중이면 True
         """
         return self.playing
     
     def set_frame_duration(self, duration: float) -> None:
         """
-        Change the frame duration (animation speed).
+        프레임 지속 시간(애니메이션 속도)을 변경합니다.
         
         Args:
-            duration: New frame duration in seconds
+            duration: 새로운 프레임 지속 시간 (초 단위)
         """
         self.frame_duration = max(0.001, duration)
     
     def render(self, screen: pygame.Surface) -> None:
         """
-        Render the current animation frame.
+        현재 애니메이션 프레임을 렌더링합니다.
         
         Args:
-            screen: Pygame surface to render to
+            screen: 렌더링할 Pygame 화면
         """
         if not self.entity or not self.frames:
             return
         
         current_image = self.get_current_frame()
         
-        # Calculate position to center the frame on entity position
+        # 엔티티 위치에 프레임을 중앙 배치하기 위한 위치 계산
         rect = current_image.get_rect()
         rect.center = (
             self.entity.position[0] + self.entity.size[0] / 2,
@@ -171,42 +171,42 @@ class Animation:
 
 class AnimationController:
     """
-    Controller for managing multiple named animations.
+    다중 명명된 애니메이션을 관리하기 위한 컨트롤러
     
-    Allows switching between different animation states (e.g., idle, walk, jump).
+    다양한 애니메이션 상태(예: idle, walk, jump) 간 전환을 허용합니다.
     """
     
     def __init__(self):
-        """Initialize the animation controller."""
+        """애니메이션 컨트롤러를 초기화합니다."""
         self.animations: dict = {}
         self.current_animation: Optional[str] = None
     
     def add_animation(self, name: str, animation: Animation) -> None:
         """
-        Add a named animation.
+        명명된 애니메이션을 추가합니다.
         
         Args:
-            name: Unique animation name
-            animation: Animation instance
+            name: 고유한 애니메이션 이름
+            animation: Animation 인스턴스
         """
         self.animations[name] = animation
     
     def play_animation(self, name: str, restart: bool = False) -> None:
         """
-        Play a named animation.
+        명명된 애니메이션을 재생합니다.
         
         Args:
-            name: Name of animation to play
-            restart: Whether to restart if already playing this animation
+            name: 재생할 애니메이션의 이름
+            restart: 이미 이 애니메이션이 재생 중인 경우 재시작할지 여부
         """
         if name not in self.animations:
             return
         
-        # Stop current animation if different
+        # 다른 경우 현재 애니메이션 중지
         if self.current_animation and self.current_animation != name:
             self.animations[self.current_animation].stop()
         
-        # Play new animation
+        # 새 애니메이션 재생
         if restart or self.current_animation != name:
             self.animations[name].restart()
         else:
@@ -216,30 +216,30 @@ class AnimationController:
     
     def update(self, dt: float) -> None:
         """
-        Update the current animation.
+        현재 애니메이션을 업데이트합니다.
         
         Args:
-            dt: Delta time in seconds
+            dt: 델타 타임 (초 단위)
         """
         if self.current_animation:
             self.animations[self.current_animation].update(dt)
     
     def render(self, screen: pygame.Surface) -> None:
         """
-        Render the current animation.
+        현재 애니메이션을 렌더링합니다.
         
         Args:
-            screen: Pygame surface to render to
+            screen: 렌더링할 Pygame 화면
         """
         if self.current_animation:
             self.animations[self.current_animation].render(screen)
     
     def get_current_animation(self) -> Optional[Animation]:
         """
-        Get the currently playing animation.
+        현재 재생 중인 애니메이션을 반환합니다.
         
         Returns:
-            Current Animation instance or None
+            현재 Animation 인스턴스 또는 None
         """
         if self.current_animation:
             return self.animations.get(self.current_animation)
