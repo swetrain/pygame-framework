@@ -155,15 +155,15 @@ class GameScene(Scene):
         """씬 시작 시 초기화"""
         self.player_x = 400
         self.player_y = 300
-    
+
     def update(self, dt):
         """게임 로직 (dt는 델타타임)"""
         self.player_x += 100 * dt  # 초당 100픽셀 이동
-    
+
     def render(self, screen):
         """화면 그리기"""
         screen.fill((0, 0, 0))  # 검은 배경
-        pygame.draw.circle(screen, (255, 0, 0), 
+        pygame.draw.circle(screen, (255, 0, 0),
                           (int(self.player_x), int(self.player_y)), 20)
 ```
 
@@ -237,7 +237,7 @@ class MyGame(Game):
             height=600,
             fps=60
         )
-        
+
         # 첫 씬 설정
         self.change_scene(GameScene(self))
 
@@ -260,7 +260,7 @@ class GameScene(Scene):
         self.player_x = 400
         self.player_y = 300
         self.player_speed = 300  # 초당 300픽셀
-    
+
     def update(self, dt):
         """게임 로직"""
         # 방향키로 플레이어 이동
@@ -272,14 +272,14 @@ class GameScene(Scene):
             self.player_y -= self.player_speed * dt
         if InputManager.is_key_pressed(pygame.K_DOWN):
             self.player_y += self.player_speed * dt
-    
+
     def render(self, screen):
         """화면 그리기"""
         # 배경
         screen.fill((50, 50, 100))
-        
+
         # 플레이어 (빨간 원)
-        pygame.draw.circle(screen, (255, 0, 0), 
+        pygame.draw.circle(screen, (255, 0, 0),
                           (int(self.player_x), int(self.player_y)), 25)
 ```
 
@@ -640,13 +640,13 @@ class FadeTransition:
         self.to_scene = to_scene
         self.duration = duration
         self.elapsed = 0
-    
+
     def update(self, dt):
         self.elapsed += dt
         if self.elapsed >= self.duration:
             return self.to_scene
         return None
-    
+
     def render(self, screen):
         self.from_scene.render(screen)
         alpha = int(255 * (self.elapsed / self.duration))
@@ -664,13 +664,13 @@ class Particle(Entity):
         super().__init__(x, y, 4, 4)
         self.lifetime = 1.0
         self.age = 0
-        
+
         physics = PhysicsComponent()
         physics.velocity_x = random.uniform(-100, 100)
         physics.velocity_y = random.uniform(-200, -50)
         physics.gravity = 200
         self.add_component(physics)
-    
+
     def update(self, dt):
         super().update(dt)
         self.age += dt
@@ -685,7 +685,7 @@ class TileMap:
     def __init__(self, tile_data, tile_size=32):
         self.tile_data = tile_data
         self.tile_size = tile_size
-    
+
     def render(self, screen, camera):
         for y, row in enumerate(self.tile_data):
             for x, tile_id in enumerate(row):
@@ -706,24 +706,24 @@ class TileMap:
 class Player(Entity):
     def __init__(self, x, y):
         super().__init__(x, y, 32, 48)
-        
+
         # 스프라이트
         self.sprite = Sprite("player.png")
         self.add_component(self.sprite)
-        
+
         # 물리
         self.physics = PhysicsComponent()
         self.physics.gravity = 980
         self.add_component(self.physics)
-        
+
         # 충돌
         self.collision = CollisionComponent()
         self.add_component(self.collision)
-        
+
         self.jump_power = -400
         self.move_speed = 200
         self.on_ground = False
-    
+
     def update(self, dt):
         # 이동
         if InputManager.is_key_pressed(pygame.K_LEFT):
@@ -732,12 +732,12 @@ class Player(Entity):
             self.physics.velocity_x = self.move_speed
         else:
             self.physics.velocity_x = 0
-        
+
         # 점프
         if InputManager.is_key_down(pygame.K_SPACE) and self.on_ground:
             self.physics.velocity_y = self.jump_power
             self.on_ground = False
-        
+
         super().update(dt)
 ```
 
@@ -747,11 +747,11 @@ class Player(Entity):
 class Bullet(Entity):
     def __init__(self, x, y, direction):
         super().__init__(x, y, 8, 8)
-        
+
         physics = PhysicsComponent()
         physics.velocity_y = -500 * direction  # 위로 발사
         self.add_component(physics)
-    
+
     def update(self, dt):
         super().update(dt)
         # 화면 밖으로 나가면 제거
@@ -762,21 +762,21 @@ class ShooterPlayer(Entity):
     def __init__(self, x, y):
         super().__init__(x, y, 48, 48)
         self.shoot_cooldown = 0
-    
+
     def update(self, dt):
         # 이동
         if InputManager.is_key_pressed(pygame.K_LEFT):
             self.x -= 300 * dt
         if InputManager.is_key_pressed(pygame.K_RIGHT):
             self.x += 300 * dt
-        
+
         # 발사
         self.shoot_cooldown -= dt
         if InputManager.is_key_pressed(pygame.K_SPACE) and self.shoot_cooldown <= 0:
             bullet = Bullet(self.x, self.y, 1)
             self.scene.add_entity(bullet)
             self.shoot_cooldown = 0.2  # 0.2초 쿨다운
-        
+
         super().update(dt)
 ```
 
@@ -792,7 +792,7 @@ class ShooterPlayer(Entity):
 
 ```python
 # 효과적인 프롬프트:
-# "Enemy 클래스를 Entity를 상속받아 만들어줘. 
+# "Enemy 클래스를 Entity를 상속받아 만들어줘.
 #  위에서 아래로 이동하고, 플레이어와 충돌하면 데미지를 입혀줘."
 
 class Enemy(Entity):
@@ -812,8 +812,8 @@ entity.add_component(collision)
 #### 3. 씬 기반 구조
 
 ```python
-# "메뉴 씬을 만들어줘. 
-#  시작 버튼과 종료 버튼이 있고, 
+# "메뉴 씬을 만들어줘.
+#  시작 버튼과 종료 버튼이 있고,
 #  시작 버튼을 누르면 게임 씬으로 전환되게 해줘."
 
 class MenuScene(Scene):
@@ -879,7 +879,7 @@ pip install pygame
 # FPS 표시
 def render(self, screen):
     # ... 렌더링 코드 ...
-    
+
     # FPS 표시
     fps_text = Text(f"FPS: {int(self.game.clock.get_fps())}", 10, 10)
     fps_text.render(screen)
@@ -888,7 +888,7 @@ def render(self, screen):
 def render(self, screen):
     super().render(screen)
     # 경계 상자 그리기
-    pygame.draw.rect(screen, (0, 255, 0), 
+    pygame.draw.rect(screen, (0, 255, 0),
                     (self.x, self.y, self.width, self.height), 2)
 ```
 
@@ -913,7 +913,7 @@ def render(self, screen):
 
 ### Q: 멀티플레이어 지원은?
 
-**A:** 현재는 싱글플레이어만 지원합니다. 
+**A:** 현재는 싱글플레이어만 지원합니다.
 네트워크 기능은 직접 추가해야 합니다.
 
 ### Q: 모바일 게임 개발은?
@@ -932,7 +932,7 @@ def render(self, screen):
 
 ### Q: 게임을 배포하려면?
 
-**A:** 
+**A:**
 - PyInstaller로 실행 파일 생성
 - `pyinstaller --onefile my_game.py`
 - assets 폴더도 함께 배포 필요
