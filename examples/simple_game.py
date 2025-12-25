@@ -9,8 +9,15 @@ pygame 프레임워크를 보여주는 간단한 예제 게임
 - 컴포넌트 기반 아키텍처
 """
 
-import pygame
+import os
 import sys
+import pygame
+
+# 프로젝트 루트를 PYTHONPATH에 추가하여 `framework` 패키지를 찾을 수 있게 함
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+
 from framework.core.game import Game
 from framework.core.scene import Scene
 from framework.core.entity import Entity
